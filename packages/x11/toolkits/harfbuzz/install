@@ -1,7 +1,8 @@
+#!/bin/sh
+
 ################################################################################
 #      This file is part of OpenELEC - http://www.openelec.tv
 #      Copyright (C) 2009-2012 Stephan Raue (stephan@openelec.tv)
-#      Copyright (C) 2011-2011 Gregor Fuis (gujs@openelec.tv)
 #
 #  This Program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,19 +20,22 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="pcscd-addon"
-PKG_VERSION="3.0"
-PKG_REV="2"
-PKG_ARCH="any"
-PKG_LICENSE="GPL"
-PKG_SITE="http://www.openelec.tv"
-PKG_URL=""
-PKG_DEPENDS=""
-PKG_BUILD_DEPENDS="toolchain pcsc-lite libusb ccid"
-PKG_PRIORITY="optional"
-PKG_SECTION="service/system"
-PKG_SHORTDESC="Middleware to access a smart card using SCard API (PC/SC)"
-PKG_LONGDESC="Middleware to access a smart card using SCard API (PC/SC)"
-PKG_IS_ADDON="yes"
-PKG_ADDON_TYPE="xbmc.service"
-PKG_AUTORECONF="no"
+. config/options $1
+
+MODULE_VERSION=`pkg-config pango --variable=pango_module_version`
+
+mkdir -p $INSTALL/usr/lib
+  cp -P $PKG_BUILD/$1/.libs/libpango*.so* $INSTALL/usr/lib
+    rm -rf $INSTALL/usr/lib/libpango*.so*T
+
+mkdir -p $INSTALL/usr/lib/pango/$MODULE_VERSION/modules
+  cp -P $PKG_BUILD/modules/*/.libs/*.so \
+    $INSTALL/usr/lib/pango/$MODULE_VERSION/modules
+
+mkdir -p $INSTALL/usr/bin
+  cp $PKG_BUILD/$1/.libs/pango-querymodules $INSTALL/usr/bin
+
+mkdir -p $INSTALL/etc/pango
+  cp $PKG_BUILD/$1/pangox.aliases $INSTALL/etc/pango
+  cp $PKG_DIR/config/pango.modules $INSTALL/etc/pango
+  cp $PKG_DIR/config/pangorc $INSTALL/etc/pango

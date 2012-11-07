@@ -22,5 +22,13 @@
 
 . config/options $1
 
-cd $BUILD
-mv ccid-${PKG_VERSION} ${PKG_NAME}-${PKG_VERSION}
+cd $PKG_BUILD
+./configure --host=$TARGET_NAME \
+            --build=$HOST_NAME \
+            --prefix=/usr \
+            --sysconfdir=/etc \
+            --disable-static \
+            --enable-shared \
+
+make
+$MAKEINSTALL
